@@ -34,14 +34,19 @@ router.post("/", (req, res) => {
 
 // PUT /users/:id — replace a user's name and email; both fields are required
 router.put("/:id", (req, res) => {
-  const { name, email } = req.body;
+  const { name, email } = req.body || {};
 
-  if (!name || !email) {
+  if (!name?.trim() || !email?.trim()) {
     return res.status(400).json({ error: "name and email are required" });
   }
 
   const id = Number(req.params.id);
-  const user = store.updateUser(id, { name, email });
+
+  if (isNaN(id)) {
+    return res.status(400).json({ error: "id must be a number" });
+  }
+
+  const user = store.updateUser(id, { name: name.trim(), email: email.trim() });
 
   if (!user) {
     return res.status(404).json({ error: "User not found" });
