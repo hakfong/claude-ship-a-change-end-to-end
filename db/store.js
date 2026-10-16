@@ -25,6 +25,7 @@ function createUser({ name, email }) {
 }
 
 function updateUser(id, { name, email }) {
+  if (!name || !email) return null;
   const user = users.find((u) => u.id === id);
   if (!user) return null;
   user.name = name;
